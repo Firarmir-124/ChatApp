@@ -24,4 +24,27 @@ usersRouter.post('/', async (req, res, next) => {
   }
 });
 
+usersRouter.post('/sessions', async (req, res, next) => {
+  const user = await User.findOne({username: req.body.username});
+
+  if (!user) {
+    return res.status(400).send({error: 'User not found'});
+  }
+
+  const isMatch = await user.checkPassword(req.body.password);
+
+  if (!isMatch) {
+    return res.status(400).send({error: 'Password not found'});
+  }
+
+  try {
+    user.generateToken();
+    await user.save();
+
+    return res.send({message: 'Username and password correct !', user});
+  }catch (e) {
+    return next(e)
+  }
+});
+
 export default usersRouter;
