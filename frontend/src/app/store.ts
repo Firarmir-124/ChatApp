@@ -2,7 +2,7 @@ import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {persistReducer, persistStore} from 'redux-persist';
 import storage from "redux-persist/lib/storage";
 import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE} from "redux-persist/es/constants";
-import {usersReducer} from "../store/usersSlice";
+import {usersReducer} from "../store/user/usersSlice";
 
 const userPersistConfig = {
   key: 'js-92:user',
