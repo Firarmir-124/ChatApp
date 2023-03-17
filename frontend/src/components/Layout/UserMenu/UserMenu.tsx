@@ -1,21 +1,30 @@
 import React from 'react';
-import {Button} from "@mui/material";
-import {Link} from "react-router-dom";
-import {linksStyle} from "../Layout";
+import {Button, CircularProgress, Typography} from "@mui/material";
 import {User} from "../../../types";
+import {logout} from "../../../store/user/usersThunk";
+import {useAppDispatch, useAppSelector} from "../../../app/hooks";
+import {selectLogoutLoading} from "../../../store/user/usersSlice";
 
 interface Props {
   user: User
 }
 
 const UserMenu:React.FC<Props> = ({user}) => {
+  const loading = useAppSelector(selectLogoutLoading);
+  const dispatch = useAppDispatch();
+
+  const unsetUser = async () => {
+    await dispatch(logout());
+  };
+
+
   return (
     <>
-      <Link style={{...linksStyle, marginRight: '10px'}} to="/create">
-        <Button color='warning' variant="contained">Привет {user.displayName}</Button>
-      </Link>
-      <Button variant="contained" color="error">
-        Выйти
+      <Typography sx={{mr: '10px'}} component='p'>
+        Привет {user.displayName}
+      </Typography>
+      <Button disabled={loading} onClick={unsetUser} variant="contained" color="error">
+        {!loading ? 'Выйти' : <CircularProgress color='inherit' size={24}/>}
       </Button>
     </>
   );

@@ -3,6 +3,9 @@ import {AppBar, Box, Container, Grid, Toolbar, Typography} from "@mui/material";
 import AnonymousMenu from "./AnonymousMenu/AnonymousMenu";
 import RedditIcon from '@mui/icons-material/Reddit';
 import {Link} from "react-router-dom";
+import {useAppSelector} from "../../app/hooks";
+import {selectUser} from "../../store/user/usersSlice";
+import UserMenu from "./UserMenu/UserMenu";
 
 interface Props {
   children: React.ReactNode
@@ -14,6 +17,8 @@ export const linksStyle:React.CSSProperties = {
 };
 
 const Layout:React.FC<Props> = ({children}) => {
+  const user = useAppSelector(selectUser);
+
   return (
     <>
       <AppBar position="static">
@@ -23,7 +28,7 @@ const Layout:React.FC<Props> = ({children}) => {
               <Grid container alignItems='center'>
                 <Grid item>
                   <Typography component={Link} to='/' style={{ ...linksStyle, color: '#fff', fontSize: '25px' }} color="text.secondary">
-                    Reddit
+                    WhatCat
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -31,7 +36,11 @@ const Layout:React.FC<Props> = ({children}) => {
                 </Grid>
               </Grid>
             </Box>
-            <AnonymousMenu/>
+            {
+              !user ? (
+                <AnonymousMenu/>
+              ) : <UserMenu user={user}/>
+            }
           </Toolbar>
         </Container>
       </AppBar>
