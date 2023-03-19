@@ -38,7 +38,7 @@ export interface GlobalError {
   error: string;
 }
 
-export interface IncomingMessage {
+export interface IncomingMessageAndClient {
   type: string;
   payload: {
     messages,
