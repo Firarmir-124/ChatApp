@@ -1,7 +1,12 @@
 import React from 'react';
 import {Avatar, Badge, ListItem, ListItemAvatar, ListItemText, styled} from "@mui/material";
+import {UserName} from "../../types";
 
-const Client = () => {
+interface Props {
+  item: UserName
+}
+
+const Client: React.FC<Props> = ({item}) => {
   const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
       backgroundColor: '#44b700',
@@ -42,7 +47,7 @@ const Client = () => {
           <Avatar src="/broken-image.jpg" />
         </StyledBadge>
       </ListItemAvatar>
-      <ListItemText primary='Дима'/>
+      <ListItemText primary={item.displayName}/>
     </ListItem>
   );
 };

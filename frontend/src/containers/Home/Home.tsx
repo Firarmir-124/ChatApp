@@ -59,7 +59,11 @@ const Home = () => {
           <Grid marginRight='10px' xs={3} item>
             <Paper sx={{mb: '5px', p: '10px', bgcolor: '#2c3c4d'}} elevation={3}>
               <List style={{ width: '100%', background: '#fff' }}>
-                <Client/>
+                {
+                  clients.map((item) => (
+                    <Client key={item._id} item={item}/>
+                  ))
+                }
               </List>
             </Paper>
           </Grid>
