@@ -10,6 +10,7 @@ export interface User {
   token: string;
   role: string;
   displayName: string;
+  isOnline: boolean;
 }
 
 export interface RegisterResponse {
@@ -35,4 +36,31 @@ export interface LoginMutation {
 
 export interface GlobalError {
   error: string;
+}
+
+export interface IncomingMessage {
+  type: string;
+  payload: {
+    messages,
+    username,
+  };
+}
+
+export interface IncomingNewMessage {
+  type: string;
+  payload: ChatMessage;
+}
+
+export interface IncomingClient {
+  type: string;
+  payload: User;
+}
+
+export interface ChatMessage {
+  _id: string;
+  text: string;
+  username: {
+    _id: string;
+    displayName: string;
+  }
 }
