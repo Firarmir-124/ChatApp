@@ -41,8 +41,8 @@ export interface GlobalError {
 export interface IncomingMessageAndClient {
   type: string;
   payload: {
-    messages,
-    username,
+    messages: ChatMessage,
+    username: {_id: string; displayName: string},
   };
 }
 
