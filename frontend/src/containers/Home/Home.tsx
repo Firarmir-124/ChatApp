@@ -10,6 +10,7 @@ import {
   TextField
 } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
+import Message from "../../components/Message/Message";
 
 const Home = () => {
   return (
@@ -19,7 +20,7 @@ const Home = () => {
           <Grid marginRight='10px' xs={3} item>
             <Paper sx={{mb: '5px', p: '10px', bgcolor: '#2c3c4d'}} elevation={3}>
               <List style={{ width: '100%', background: '#fff' }}>
-                Клиенты !
+
               </List>
             </Paper>
           </Grid>
@@ -34,7 +35,7 @@ const Home = () => {
           >
             <Paper sx={{px: '5px', bgcolor: '#2c3c4d'}} elevation={4}>
               <List sx={{ width: '100%' }}>
-                Сообщения !
+                <Message/>
               </List>
             </Paper>
           </Grid>
