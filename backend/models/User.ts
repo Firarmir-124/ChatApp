@@ -43,6 +43,10 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
   displayName: {
     type: String,
     required: true
+  },
+  isOnline: {
+    type: Boolean,
+    default: false,
   }
 });
 

@@ -4,4 +4,10 @@ export interface IUser {
   role: string;
   token: string;
   displayName: string;
+  isOnline: boolean;
+}
+
+export interface IncomingMessage {
+  type: string;
+  payload: string;
 }
