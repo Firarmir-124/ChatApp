@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import Message from "../../components/Message/Message";
+import Client from "../../components/Client/Client";
 
 const Home = () => {
   return (
@@ -20,7 +21,7 @@ const Home = () => {
           <Grid marginRight='10px' xs={3} item>
             <Paper sx={{mb: '5px', p: '10px', bgcolor: '#2c3c4d'}} elevation={3}>
               <List style={{ width: '100%', background: '#fff' }}>
-
+                <Client/>
               </List>
             </Paper>
           </Grid>
