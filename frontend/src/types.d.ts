@@ -38,6 +38,11 @@ export interface GlobalError {
   error: string;
 }
 
+export interface UserName {
+  _id: string;
+  displayName: string;
+}
+
 export interface IncomingMessageAndClient {
   type: string;
   payload: {
@@ -51,16 +56,8 @@ export interface IncomingNewMessage {
   payload: ChatMessage;
 }
 
-export interface IncomingClient {
-  type: string;
-  payload: User;
-}
-
 export interface ChatMessage {
   _id: string;
   text: string;
-  username: {
-    _id: string;
-    displayName: string;
-  }
+  username: UserName
 }

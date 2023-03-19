@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Layout from "../../components/Layout/Layout";
 import {
   Box,
@@ -10,10 +10,47 @@ import {
   TextField
 } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import Message from "../../components/Message/Message";
 import Client from "../../components/Client/Client";
+import {ChatMessage, IncomingMessageAndClient, UserName} from "../../types";
+import {useAppSelector} from "../../app/hooks";
+import {selectUser} from "../../store/user/usersSlice";
+import {Navigate} from "react-router-dom";
 
 const Home = () => {
+  const [messages, setMessages] = useState<ChatMessage | null>(null);
+  const [clients, setClients] = useState<UserName | null>(null);
+  const user = useAppSelector(selectUser);
+  const ws = useRef<WebSocket | null>(null);
+
+  useEffect(() => {
+    ws.current = new WebSocket(`ws://localhost:8000/messenger?token=${user && user.token}`);
+
+    ws.current.onclose = () => {
+      console.log('Соединение закрыто !');
+    }
+
+    ws.current.onmessage = (event) => {
+      const parseMessagesAndClients = JSON.parse(event.data) as IncomingMessageAndClient;
+
+      if (parseMessagesAndClients.type === 'LOGIN') {
+        setMessages(parseMessagesAndClients.payload.messages);
+        setClients(parseMessagesAndClients.payload.username);
+      }
+    }
+
+    return () => {
+      if (ws.current) {
+        ws.current.close();
+      }
+    }
+
+  }, [user && user.token]);
+
+  if (!user) {
+    return <Navigate to={'/login'}/>;
+  }
+
+
   return (
     <Layout>
       <Container>
@@ -36,7 +73,7 @@ const Home = () => {
           >
             <Paper sx={{px: '5px', bgcolor: '#2c3c4d'}} elevation={4}>
               <List sx={{ width: '100%' }}>
-                <Message/>
+                Сообщения
               </List>
             </Paper>
           </Grid>
