@@ -15,10 +15,11 @@ import {ChatMessage, IncomingMessageAndClient, UserName} from "../../types";
 import {useAppSelector} from "../../app/hooks";
 import {selectUser} from "../../store/user/usersSlice";
 import {Navigate} from "react-router-dom";
+import Message from "../../components/Message/Message";
 
 const Home = () => {
-  const [messages, setMessages] = useState<ChatMessage | null>(null);
-  const [clients, setClients] = useState<UserName | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [clients, setClients] = useState<UserName[]>([]);
   const user = useAppSelector(selectUser);
   const ws = useRef<WebSocket | null>(null);
 
@@ -73,7 +74,11 @@ const Home = () => {
           >
             <Paper sx={{px: '5px', bgcolor: '#2c3c4d'}} elevation={4}>
               <List sx={{ width: '100%' }}>
-                Сообщения
+                {
+                  messages.map((item) => (
+                    <Message key={item._id} message={item}/>
+                  ))
+                }
               </List>
             </Paper>
           </Grid>

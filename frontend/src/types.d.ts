@@ -46,8 +46,8 @@ export interface UserName {
 export interface IncomingMessageAndClient {
   type: string;
   payload: {
-    messages: ChatMessage,
-    username: {_id: string; displayName: string},
+    messages: ChatMessage[],
+    username: UserName[],
   };
 }
 
