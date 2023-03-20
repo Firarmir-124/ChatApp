@@ -88,7 +88,7 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
 
         try {
           await Message.deleteOne({_id: decodedMessage.payload});
-          const messages = await Message.find();
+          const messages = await Message.find().sort({datetime: -1}).limit(30).populate('username', 'displayName');
 
           Object.keys(activeConnections).forEach((id) => {
             const connection = activeConnections[id];

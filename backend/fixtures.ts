@@ -38,18 +38,22 @@ const run = async () => {
     {
       text: 'Привет',
       username: user1._id,
+      datetime: (new Date()).toString(),
     },
      {
        text: 'Как дела ?',
        username: user1._id,
+       datetime: (new Date()).toString(),
      },
      {
        text: 'Ну привет',
        username: user2._id,
+       datetime: (new Date()).toString(),
      },
      {
        text: 'Пойдет, сам как ?',
        username: user2._id,
+       datetime: (new Date()).toString(),
      },
   );
 
