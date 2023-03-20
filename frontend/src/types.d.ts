@@ -59,5 +59,6 @@ export interface IncomingNewMessage {
 export interface ChatMessage {
   _id: string;
   text: string;
-  username: UserName
+  username: UserName;
+  datetime: string;
 }
