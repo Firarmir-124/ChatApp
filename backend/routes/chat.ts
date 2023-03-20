@@ -17,7 +17,7 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
   
   try {
     const user = await User.findOne({token: req.query.token}).select(['displayName', 'role']);
-    const messages = await Message.find().sort({_id: -1}).limit(30).populate('username', 'displayName');
+    const messages = await Message.find().sort({datetime: -1}).limit(30).populate('username', 'displayName');
     
     if (user) {
       username = user;
@@ -55,6 +55,7 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
           const newMessage = await Message.create({
             username,
             text: decodedMessage.payload,
+            datetime: (new Date()).toString(),
           });
 
           Object.keys(activeConnections).forEach((id) => {
