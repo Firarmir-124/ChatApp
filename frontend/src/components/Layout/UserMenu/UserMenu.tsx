@@ -1,22 +1,16 @@
 import React from 'react';
 import {Button, CircularProgress, Typography} from "@mui/material";
 import {User} from "../../../types";
-import {logout} from "../../../store/user/usersThunk";
-import {useAppDispatch, useAppSelector} from "../../../app/hooks";
+import {useAppSelector} from "../../../app/hooks";
 import {selectLogoutLoading} from "../../../store/user/usersSlice";
 
 interface Props {
-  user: User
+  user: User;
+  unsetUser?: React.MouseEventHandler;
 }
 
-const UserMenu:React.FC<Props> = ({user}) => {
+const UserMenu:React.FC<Props> = ({unsetUser, user}) => {
   const loading = useAppSelector(selectLogoutLoading);
-  const dispatch = useAppDispatch();
-
-  const unsetUser = async () => {
-    await dispatch(logout());
-  };
-
 
   return (
     <>

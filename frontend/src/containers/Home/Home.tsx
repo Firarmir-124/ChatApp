@@ -12,10 +12,11 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import Client from "../../components/Client/Client";
 import {ChatMessage, IncomingMessageAndClient, IncomingNewMessage, UserName} from "../../types";
-import {useAppSelector} from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {selectUser} from "../../store/user/usersSlice";
 import {Navigate} from "react-router-dom";
 import Message from "../../components/Message/Message";
+import {logout} from "../../store/user/usersThunk";
 
 const Home = () => {
   const [value, setValue] = useState('');
@@ -23,6 +24,7 @@ const Home = () => {
   const [clients, setClients] = useState<UserName[]>([]);
   const user = useAppSelector(selectUser);
   const ws = useRef<WebSocket | null>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     ws.current = new WebSocket(`ws://localhost:8000/messenger?token=${user && user.token}`);
@@ -65,12 +67,22 @@ const Home = () => {
     setValue('');
   };
 
+  const unsetUser = async () => {
+    if (!ws.current) return;
+    ws.current.send(JSON.stringify({
+      type: 'EXT',
+      payload: false,
+    }));
+
+    await dispatch(logout());
+  };
+
   if (!user) {
     return <Navigate to={'/login'}/>;
   }
 
   return (
-    <Layout>
+    <Layout unsetUser={unsetUser}>
       <Container>
         <Grid padding='10px' marginTop='10px' bgcolor='#12273c' container>
           <Grid marginRight='10px' xs={3} item>
@@ -97,7 +109,7 @@ const Home = () => {
               <List sx={{ width: '100%' }}>
                 {
                   messages.map((item) => (
-                    <Message key={item._id + item.username._id} message={item}/>
+                    <Message key={item._id} message={item}/>
                   ))
                 }
               </List>

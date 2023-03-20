@@ -9,6 +9,7 @@ import UserMenu from "./UserMenu/UserMenu";
 
 interface Props {
   children: React.ReactNode
+  unsetUser?: () => void;
 }
 
 export const linksStyle:React.CSSProperties = {
@@ -16,7 +17,7 @@ export const linksStyle:React.CSSProperties = {
   color: '#333'
 };
 
-const Layout:React.FC<Props> = ({children}) => {
+const Layout:React.FC<Props> = ({unsetUser, children}) => {
   const user = useAppSelector(selectUser);
 
   return (
@@ -39,7 +40,7 @@ const Layout:React.FC<Props> = ({children}) => {
             {
               !user ? (
                 <AnonymousMenu/>
-              ) : <UserMenu user={user}/>
+              ) : <UserMenu unsetUser={unsetUser} user={user}/>
             }
           </Toolbar>
         </Container>
