@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Layout from "../../components/Layout/Layout";
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -50,6 +51,10 @@ const Home = () => {
       if (parseNewMessage.type === 'NEW_MESSAGE') {
         setMessages(prev => [...prev, parseNewMessage.payload]);
       }
+
+      if (parseNewMessage.type === 'NEW_MESSAGE_REMOVE') {
+        setMessages(parseMessagesAndClients.payload.messages);
+      }
     }
 
     return () => {
@@ -82,6 +87,16 @@ const Home = () => {
     await dispatch(logout());
   };
 
+  const removeMessage = (message: string) => {
+    const index = messages.findIndex((item) => item._id === message);
+
+    if (!ws.current) return;
+    ws.current.send(JSON.stringify({
+      type: 'REMOVE',
+      payload: messages[index]._id,
+    }));
+  }
+
   if (!user) {
     return <Navigate to={'/login'}/>;
   }
@@ -113,9 +128,11 @@ const Home = () => {
             <Paper sx={{px: '5px', bgcolor: '#2c3c4d'}} elevation={4}>
               <List sx={{ width: '100%' }}>
                 {
-                  messages.map((item) => (
-                    <Message key={item._id} message={item}/>
-                  ))
+                  messages.length !== 0 ? (
+                    messages.map((item) => (
+                      <Message removeMessage={() => removeMessage(item._id)} key={item._id} message={item}/>
+                    ))
+                  ) : <Alert severity='info'>Сообщений нет !</Alert>
                 }
               </List>
             </Paper>
