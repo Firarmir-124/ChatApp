@@ -3,7 +3,7 @@ import {Avatar, Badge, ListItem, ListItemAvatar, ListItemText, styled} from "@mu
 import {UserName} from "../../types";
 
 interface Props {
-  item: UserName
+  item: UserName;
 }
 
 const Client: React.FC<Props> = ({item}) => {

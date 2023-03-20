@@ -55,13 +55,13 @@ const Home = () => {
       if (parseNewMessage.type === 'NEW_MESSAGE_REMOVE') {
         setMessages(parseMessagesAndClients.payload.messages);
       }
-    }
+    };
 
     return () => {
       if (ws.current) {
         ws.current.close();
       }
-    }
+    };
 
   }, [user && user.token]);
 
