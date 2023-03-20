@@ -16,7 +16,7 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
   let username: IUser | null = null;
   
   try {
-    const user = await User.findOne({token: req.query.token});
+    const user = await User.findOne({token: req.query.token}).select(['displayName']);
     const messages = await Message.find().sort({_id: -1}).limit(30).populate('username', 'displayName');
     
     if (user) {
@@ -62,6 +62,7 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
           connection.send(JSON.stringify({
             type: 'NEW_MESSAGE',
             payload: {
+              _id: crypto.randomUUID(),
               username,
               text: decodedMessage.payload,
             },

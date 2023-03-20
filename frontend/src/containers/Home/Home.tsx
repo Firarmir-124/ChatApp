@@ -11,13 +11,14 @@ import {
 } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import Client from "../../components/Client/Client";
-import {ChatMessage, IncomingMessageAndClient, UserName} from "../../types";
+import {ChatMessage, IncomingMessageAndClient, IncomingNewMessage, UserName} from "../../types";
 import {useAppSelector} from "../../app/hooks";
 import {selectUser} from "../../store/user/usersSlice";
 import {Navigate} from "react-router-dom";
 import Message from "../../components/Message/Message";
 
 const Home = () => {
+  const [value, setValue] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [clients, setClients] = useState<UserName[]>([]);
   const user = useAppSelector(selectUser);
@@ -28,14 +29,19 @@ const Home = () => {
 
     ws.current.onclose = () => {
       console.log('Соединение закрыто !');
-    }
+    };
 
     ws.current.onmessage = (event) => {
       const parseMessagesAndClients = JSON.parse(event.data) as IncomingMessageAndClient;
+      const parseNewMessage = JSON.parse(event.data) as IncomingNewMessage;
 
       if (parseMessagesAndClients.type === 'LOGIN') {
         setMessages(parseMessagesAndClients.payload.messages);
         setClients(parseMessagesAndClients.payload.username);
+      }
+
+      if (parseNewMessage.type === 'NEW_MESSAGE') {
+        setMessages(prev => [...prev, parseNewMessage.payload]);
       }
     }
 
@@ -47,10 +53,21 @@ const Home = () => {
 
   }, [user && user.token]);
 
+  const sendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!ws.current) return;
+    ws.current.send(JSON.stringify({
+      type: 'SEND_MESSAGES',
+      payload: value,
+    }));
+
+    setValue('');
+  };
+
   if (!user) {
     return <Navigate to={'/login'}/>;
   }
-
 
   return (
     <Layout>
@@ -80,7 +97,7 @@ const Home = () => {
               <List sx={{ width: '100%' }}>
                 {
                   messages.map((item) => (
-                    <Message key={item._id} message={item}/>
+                    <Message key={item._id + item.username._id} message={item}/>
                   ))
                 }
               </List>
@@ -89,10 +106,12 @@ const Home = () => {
         </Grid>
 
         <Paper sx={{mt: '10px'}} elevation={3}>
-          <Box component='form'>
+          <Box onSubmit={sendMessage} component='form'>
             <TextField
+              value={value}
+              onChange={(e:React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
               type='text'
-              InputProps={{endAdornment: <Button variant="contained" endIcon={<SendIcon />}>Send</Button>}}
+              InputProps={{endAdornment: <Button type='submit' variant="contained" endIcon={<SendIcon />}>Send</Button>}}
               fullWidth
             />
           </Box>
