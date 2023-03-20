@@ -31,6 +31,11 @@ const Home = () => {
 
     ws.current.onclose = () => {
       console.log('Соединение закрыто !');
+
+      setTimeout(() => {
+        console.log('Повторное соединение !')
+        ws.current = new WebSocket(`ws://localhost:8000/messenger?token=${user && user.token}`);
+      }, 1000);
     };
 
     ws.current.onmessage = (event) => {
