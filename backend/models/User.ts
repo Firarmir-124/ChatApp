@@ -38,7 +38,7 @@ const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
     type: String,
     required: true,
     default: 'user',
-    enum: ['user', 'admin']
+    enum: ['user', 'moderator']
   },
   displayName: {
     type: String,

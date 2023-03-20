@@ -16,7 +16,7 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
   let username: IUser | null = null;
   
   try {
-    const user = await User.findOne({token: req.query.token}).select(['displayName']);
+    const user = await User.findOne({token: req.query.token}).select(['displayName', 'role']);
     const messages = await Message.find().sort({_id: -1}).limit(30).populate('username', 'displayName');
     
     if (user) {
@@ -50,24 +50,22 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
     switch (decodedMessage.type) {
       case 'SEND_MESSAGES':
         try {
-          await Message.create({
+          const newMessage = await Message.create({
             username,
             text: decodedMessage.payload,
+          });
+
+
+          Object.keys(activeConnections).forEach((id) => {
+            const connection = activeConnections[id];
+            connection.send(JSON.stringify({
+              type: 'NEW_MESSAGE',
+              payload: newMessage,
+            }));
           });
         }catch (e) {
           return next(e);
         }
-        Object.keys(activeConnections).forEach((id) => {
-          const connection = activeConnections[id];
-          connection.send(JSON.stringify({
-            type: 'NEW_MESSAGE',
-            payload: {
-              _id: crypto.randomUUID(),
-              username,
-              text: decodedMessage.payload,
-            },
-          }));
-        });
         break;
       case 'EXT':
         try {
@@ -82,7 +80,29 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
 
         }
         break;
+      case 'REMOVE':
+        if (!username) return;
+        if (username.role !== 'moderator') return;
 
+        try {
+          await Message.deleteOne({_id: decodedMessage.payload});
+          const messages = await Message.find();
+
+          Object.keys(activeConnections).forEach((id) => {
+            const connection = activeConnections[id];
+
+            connection.send(JSON.stringify({
+              type: 'NEW_MESSAGE_REMOVE',
+              payload: {
+                messages
+              }
+            }));
+          });
+
+        } catch (e) {
+          return next(e);
+        }
+        break;
       default:
         console.log('Unknown type: ', decodedMessage.type);
     }
