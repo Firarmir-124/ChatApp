@@ -49,12 +49,13 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
     const decodedMessage = JSON.parse(msg.toString()) as IncomingMessage;
     switch (decodedMessage.type) {
       case 'SEND_MESSAGES':
+        if (!username) break;
+
         try {
           const newMessage = await Message.create({
             username,
             text: decodedMessage.payload,
           });
-
 
           Object.keys(activeConnections).forEach((id) => {
             const connection = activeConnections[id];
@@ -77,12 +78,12 @@ chatRouter.ws('/messenger', async (ws, req, next) => {
             await user.save();
           }
         } catch (e) {
-
+          return next(e);
         }
         break;
       case 'REMOVE':
-        if (!username) return;
-        if (username.role !== 'moderator') return;
+        if (!username) break;
+        if (username.role !== 'moderator') break;
 
         try {
           await Message.deleteOne({_id: decodedMessage.payload});
