@@ -63,7 +63,7 @@ const Home = () => {
       }
     };
 
-  }, [user && user.token]);
+  }, [user]);
 
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,6 +147,7 @@ const Home = () => {
               type='text'
               InputProps={{endAdornment: <Button type='submit' variant="contained" endIcon={<SendIcon />}>Send</Button>}}
               fullWidth
+              required
             />
           </Box>
         </Paper>
